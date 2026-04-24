@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Презентация</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #0f0f1a;
+      color: #fff;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .slideshow {
+      width: 100%;
+      height: 100vh;
+      position: relative;
+    }
+
+    .slide {
+      display: none;
+      position: absolute;
+      inset: 0;
+      padding: 60px 80px;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+      animation: fadeIn 0.4s ease;
+    }
+
+    .slide.active { display: flex; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Slide backgrounds */
+    .slide-1 { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); }
+    .slide-2 { background: linear-gradient(135deg, #0d1b2a 0%, #1b263b 50%, #415a77 100%); }
+    .slide-3 { background: linear-gradient(135deg, #10002b 0%, #240046 50%, #3c096c 100%); }
+    .slide-4 { background: linear-gradient(135deg, #022c22 0%, #064e3b 50%, #065f46 100%); }
+    .slide-5 { background: linear-gradient(135deg, #1a0a00 0%, #431407 50%, #7c2d12 100%); }
+    .slide-6 { background: linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 50%, #2d2d44 100%); }
+
+    .slide-number {
+      position: absolute;
+      bottom: 24px;
+      right: 32px;
+      font-size: 13px;
+      opacity: 0.4;
+    }
+
+    .tag {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      color: #a78bfa;
+      margin-bottom: 20px;
+      font-weight: 600;
+    }
+
+    h1 {
+      font-size: clamp(2rem, 5vw, 3.8rem);
+      font-weight: 800;
+      line-height: 1.1;
+      margin-bottom: 16px;
+      background: linear-gradient(90deg, #fff 0%, #a78bfa 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    h2 {
+      font-size: clamp(1.5rem, 3vw, 2.4rem);
+      font-weight: 700;
+      margin-bottom: 24px;
+      color: #e2e8f0;
+    }
+
+    p {
+      font-size: clamp(1rem, 1.8vw, 1.25rem);
+      line-height: 1.7;
+      color: #cbd5e1;
+      max-width: 700px;
+      margin-bottom: 12px;
+    }
+
+    .subtitle {
+      font-size: clamp(1rem, 2vw, 1.4rem);
+      color: #94a3b8;
+      margin-top: 8px;
+      margin-bottom: 0;
+    }
+
+    ul {
+      list-style: none;
+      margin-top: 8px;
+    }
+
+    ul li {
+      font-size: clamp(1rem, 1.8vw, 1.2rem);
+      color: #cbd5e1;
+      padding: 10px 0;
+      padding-left: 28px;
+      position: relative;
+      line-height: 1.5;
+    }
+
+    ul li::before {
+      content: '▸';
+      position: absolute;
+      left: 0;
+      color: #a78bfa;
+    }
+
+    .highlight-box {
+      background: rgba(167, 139, 250, 0.12);
+      border-left: 4px solid #a78bfa;
+      border-radius: 4px;
+      padding: 20px 28px;
+      margin-top: 16px;
+      max-width: 700px;
+    }
+
+    .highlight-box p {
+      margin-bottom: 0;
+      color: #e2e8f0;
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      width: 100%;
+      max-width: 900px;
+      margin-top: 16px;
+    }
+
+    .card {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      padding: 24px;
+    }
+
+    .card h3 {
+      font-size: 1.1rem;
+      color: #a78bfa;
+      margin-bottom: 10px;
+    }
+
+    .card p {
+      font-size: 0.95rem;
+      color: #94a3b8;
+      margin-bottom: 0;
+    }
+
+    /* Controls */
+    .controls {
+      position: fixed;
+      bottom: 28px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 12px;
+      z-index: 100;
+    }
+
+    .btn {
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: #fff;
+      padding: 10px 28px;
+      border-radius: 50px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      transition: background 0.2s, transform 0.1s;
+      backdrop-filter: blur(8px);
+    }
+
+    .btn:hover { background: rgba(167, 139, 250, 0.3); transform: scale(1.04); }
+    .btn:disabled { opacity: 0.3; cursor: default; transform: none; }
+
+    /* Progress bar */
+    .progress {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #a78bfa, #60a5fa);
+      transition: width 0.4s ease;
+      z-index: 200;
+    }
+  </style>
+</head>
+<body>
+
+<div class="progress" id="progress"></div>
+
+<div class="slideshow" id="slideshow">
+
+  <!-- Slide 1: Title -->
+  <div class="slide slide-1 active">
+    <div class="tag">Презентация</div>
+    <h1>Добро пожаловать</h1>
+    <p class="subtitle">Вставьте сюда название вашего проекта или темы</p>
+    <div class="slide-number">1 / 6</div>
+  </div>
+
+  <!-- Slide 2: About -->
+  <div class="slide slide-2">
+    <div class="tag">О проекте</div>
+    <h2>Что это такое?</h2>
+    <p>Опишите здесь суть вашего проекта, идеи или продукта. Расскажите, какую проблему вы решаете и почему это важно.</p>
+    <div class="highlight-box">
+      <p>💡 Ключевая идея: вставьте сюда вашу главную мысль или ценностное предложение.</p>
+    </div>
+    <div class="slide-number">2 / 6</div>
+  </div>
+
+  <!-- Slide 3: Goals -->
+  <div class="slide slide-3">
+    <div class="tag">Цели</div>
+    <h2>Наши задачи</h2>
+    <ul>
+      <li>Первая ключевая цель или задача проекта</li>
+      <li>Вторая ключевая цель или задача проекта</li>
+      <li>Третья ключевая цель или задача проекта</li>
+      <li>Четвёртая ключевая цель или задача проекта</li>
+    </ul>
+    <div class="slide-number">3 / 6</div>
+  </div>
+
+  <!-- Slide 4: Features / Details -->
+  <div class="slide slide-4">
+    <div class="tag">Особенности</div>
+    <h2>Ключевые возможности</h2>
+    <div class="two-col">
+      <div class="card">
+        <h3>⚡ Быстро</h3>
+        <p>Опишите первое ключевое преимущество или функцию вашего продукта.</p>
+      </div>
+      <div class="card">
+        <h3>🔒 Надёжно</h3>
+        <p>Опишите второе ключевое преимущество или функцию вашего продукта.</p>
+      </div>
+      <div class="card">
+        <h3>🎨 Удобно</h3>
+        <p>Опишите третье ключевое преимущество или функцию вашего продукта.</p>
+      </div>
+      <div class="card">
+        <h3>📈 Масштабируемо</h3>
+        <p>Опишите четвёртое ключевое преимущество или функцию вашего продукта.</p>
+      </div>
+    </div>
+    <div class="slide-number">4 / 6</div>
+  </div>
+
+  <!-- Slide 5: Roadmap / Plan -->
+  <div class="slide slide-5">
+    <div class="tag">План</div>
+    <h2>Дальнейшие шаги</h2>
+    <ul>
+      <li><strong style="color:#fca5a5">Этап 1</strong> — Описание первого этапа реализации</li>
+      <li><strong style="color:#fca5a5">Этап 2</strong> — Описание второго этапа реализации</li>
+      <li><strong style="color:#fca5a5">Этап 3</strong> — Описание третьего этапа реализации</li>
+      <li><strong style="color:#fca5a5">Этап 4</strong> — Запуск и обратная связь</li>
+    </ul>
+    <div class="slide-number">5 / 6</div>
+  </div>
+
+  <!-- Slide 6: Conclusion -->
+  <div class="slide slide-6">
+    <div class="tag">Заключение</div>
+    <h1>Спасибо!</h1>
+    <p class="subtitle">Вопросы? Давайте обсудим.</p>
+    <p style="margin-top:32px; color:#64748b; font-size:0.95rem;">Контакты: вставьте ваши контактные данные</p>
+    <div class="slide-number">6 / 6</div>
+  </div>
+
+</div>
+
+<!-- Navigation -->
+<div class="controls">
+  <button class="btn" id="prevBtn" onclick="changeSlide(-1)" disabled>← Назад</button>
+  <button class="btn" id="nextBtn" onclick="changeSlide(1)">Вперёд →</button>
+</div>
+
+<script>
+  let current = 0;
+  const slides = document.querySelectorAll('.slide');
+  const total = slides.length;
+  const progress = document.getElementById('progress');
+
+  function updateProgress() {
+    const pct = ((current + 1) / total) * 100;
+    progress.style.width = pct + '%';
+  }
+
+  function changeSlide(dir) {
+    slides[current].classList.remove('active');
+    current = Math.max(0, Math.min(total - 1, current + dir));
+    slides[current].classList.add('active');
+    document.getElementById('prevBtn').disabled = current === 0;
+    document.getElementById('nextBtn').disabled = current === total - 1;
+    updateProgress();
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') changeSlide(1);
+    if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')  changeSlide(-1);
+  });
+
+  updateProgress();
+</script>
+</body>
+</html>
